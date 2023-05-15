@@ -1,13 +1,8 @@
-import { Theme, ThemeProvider, useTheme } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
+import { ThemeProvider, useTheme } from '@mui/material/styles';
 import { Button, Box, CssBaseline, IconButton } from '@mui/material';
-import {
-  useState,
-  useEffect,
-  useContext,
-  FC,
-  createContext,
-  PropsWithChildren,
-} from 'react';
+import type { FC, PropsWithChildren } from 'react';
+import { useState, useEffect, useContext, createContext } from 'react';
 import { ButtonFont } from './components/library/Typography';
 import { darkTheme, lightTheme } from './theme';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
@@ -91,14 +86,13 @@ export const ThemeToggleButton = () => {
         color={theme.palette.text.primary}
       >
         <IconButton sx={{ ml: 1 }} onClick={toggleTheme} color="inherit">
-          {theme.palette.mode === 'dark' ? (
-            <Brightness7Icon />
-          ) : (
-            <Brightness4Icon />
-          )}
+          {themeType === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
         </IconButton>
       </Box>
-      <ButtonFont color="inherit" marginLeft={2}>
+      <ButtonFont
+        color={themeType === 'dark' ? theme.palette.text.primary : 'inherit'}
+        marginLeft={2}
+      >
         {themeLabel}
       </ButtonFont>
     </Button>

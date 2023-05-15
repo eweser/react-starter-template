@@ -14,8 +14,7 @@ export const Nav = () => {
   const [navOpen, setNavOpen] = useState(false);
   return (
     <>
-      {' '}
-      <AppBar position="fixed">
+      <AppBar position="fixed" enableColorOnDark>
         <Toolbar>
           <IconButton
             size="large"
