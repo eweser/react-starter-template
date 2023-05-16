@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA, VitePWAOptions } from 'vite-plugin-pwa';
+import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 const pwaOptions: Partial<VitePWAOptions> = {
   mode: 'development',
@@ -48,4 +49,9 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    rollupOptions: {
+      plugins: [nodePolyfills()],
+    },
+  },
 });
