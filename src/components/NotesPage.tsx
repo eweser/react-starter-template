@@ -53,6 +53,7 @@ const NotesInner = ({ currentRoom }: { currentRoom: Room<Note> }) => {
   const deleteNote = (note: Note) => {
     Notes.delete(note._id);
   };
+
   return (
     <Container maxWidth="md">
       {Object.keys(notes).map((id) => {

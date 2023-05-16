@@ -20,7 +20,7 @@ export interface CollectionContextValue<T extends Document = Document> {
 }
 
 const CollectionContext = createContext<CollectionContextValue>({
-  roomsList: [],
+  roomsList: {},
   currentRoom: null,
   loadingRoom: false,
   roomError: '',
@@ -31,11 +31,11 @@ const CollectionContext = createContext<CollectionContextValue>({
 
 export const CollectionProvider = <T extends Document>({
   collectionKey,
-  initialAliasSeed,
+  aliasSeed,
   children,
 }: {
   collectionKey: CollectionKey;
-  initialAliasSeed?: string;
+  aliasSeed?: string;
   children: React.ReactNode;
 }) => {
   const { db } = useDatabase();
@@ -46,7 +46,7 @@ export const CollectionProvider = <T extends Document>({
   const [currentRoom, setCurrentRoom] = useState<Room<T> | null>(null);
   // allow creating new rooms.
   const [creatingRoom, setCreatingRoom] = useState(false);
-  const [loadingRoom, setLoadingRoom] = useState(true);
+  const [loadingRoom, setLoadingRoom] = useState(false);
   const [roomError, setRoomError] = useState('');
 
   const handleCreateRoom = async (name: string) => {
@@ -89,10 +89,10 @@ export const CollectionProvider = <T extends Document>({
   );
 
   useEffect(() => {
-    if (initialAliasSeed) {
-      handleSelectRoom(initialAliasSeed);
+    if (aliasSeed && !loadingRoom && !currentRoom) {
+      handleSelectRoom(aliasSeed);
     }
-  }, [currentRoom, handleSelectRoom, initialAliasSeed]);
+  }, [currentRoom, handleSelectRoom, aliasSeed, loadingRoom]);
 
   return (
     <CollectionContext.Provider
