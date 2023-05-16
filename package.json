@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start-test-server": "cd test-server; docker-compose up -d",
+    "start-test-rpc-server": "cd test-rpc-server; node server.js"
   },
   "dependencies": {
     "@emotion/react": "^11.11.0",
@@ -16,6 +18,8 @@
     "@fontsource/roboto": "^4.5.8",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.0",
+    "buffer": "^6.0.3",
+    "events": "^3.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

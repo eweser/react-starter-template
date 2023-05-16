@@ -1,24 +1,10 @@
-import {
-  Box,
-  CircularProgress,
-  Container,
-  Paper,
-  useTheme,
-} from '@mui/material';
-import { H1 } from './components/library/Typography';
+import { Box, CircularProgress, useTheme } from '@mui/material';
 import { Nav } from './components/Nav';
 import { useDatabase } from './DatabaseContext';
 import { LoginForm } from './components/LoginForm';
-
-export const NotesPage = () => {
-  return (
-    <Container maxWidth="md">
-      <Paper>
-        <H1>Note</H1>
-      </Paper>
-    </Container>
-  );
-};
+import { CollectionProvider } from './CollectionContext';
+import { initialRoomConnect } from './config';
+import { NotesPage } from './components/NotesPage';
 
 function App() {
   const { loadingStatus } = useDatabase();
@@ -39,7 +25,9 @@ function App() {
       {loadingStatus === 'initial' || loadingStatus === 'loading' ? (
         <CircularProgress size={80} />
       ) : loadingStatus === 'ready' ? (
-        <NotesPage />
+        <CollectionProvider {...initialRoomConnect}>
+          <NotesPage />
+        </CollectionProvider>
       ) : (
         <LoginForm />
       )}

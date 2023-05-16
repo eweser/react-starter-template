@@ -3,6 +3,7 @@ import { Database } from '@eweser/db';
 import type { FC, PropsWithChildren } from 'react';
 import { useCallback } from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
+import { initialRoomConnect } from './config';
 
 const db = new Database({
   //
@@ -69,7 +70,7 @@ export const DatabaseProvider: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     db.on('status-update', handleStatusUpdate);
-    db.load([]);
+    db.load([initialRoomConnect]);
 
     return () => {
       db.off('status-update');
@@ -85,4 +86,10 @@ export const DatabaseProvider: FC<PropsWithChildren> = ({ children }) => {
   );
 };
 
-export const useDatabase = () => useContext(DatabaseContext);
+export const useDatabase = () => {
+  const context = useContext(DatabaseContext);
+  if (!context) {
+    throw new Error('useDatabase must be used within a DatabaseProvider');
+  }
+  return context;
+};

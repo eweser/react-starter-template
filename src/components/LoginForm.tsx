@@ -6,6 +6,7 @@ import {
   IconButton,
   InputAdornment,
   Paper,
+  CircularProgress,
 } from '@mui/material';
 import { useState, useRef } from 'react';
 import type { LoginData } from '@eweser/db';
@@ -16,7 +17,12 @@ import {
 } from '@eweser/db';
 
 import { useDatabase } from '../DatabaseContext';
-import { DEV_USERNAME, DEV_PASSWORD, MATRIX_SERVER } from '../config';
+import {
+  DEV_USERNAME,
+  DEV_PASSWORD,
+  MATRIX_SERVER,
+  initialRoomConnect,
+} from '../config';
 
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -89,13 +95,17 @@ export const LoginForm = () => {
   const handleSubmit = async () => {
     try {
       setSubmitting(true);
+      const loginDataWithInitialRoomConnect = {
+        ...loginData,
+        initialRoomConnect,
+      };
       if (action === 'Login') {
-        const loginResult = db.login(loginData);
+        const loginResult = db.login(loginDataWithInitialRoomConnect);
         if (typeof loginResult === 'string') {
           setError(loginResult);
         }
       } else {
-        const signupResult = await db.signup(loginData);
+        const signupResult = await db.signup(loginDataWithInitialRoomConnect);
         if (typeof signupResult === 'string') {
           setError(signupResult);
         }
@@ -115,7 +125,7 @@ export const LoginForm = () => {
 
   const requiredEmpty = baseUrl === '' || userId === '' || password === '';
 
-  const submitDisabled = requiredEmpty || requiredEmpty || submitting;
+  const submitDisabled = requiredEmpty || submitting;
 
   return (
     <Paper sx={{ width: { xs: '100%', md: 'auto' }, margin: { xs: 2, md: 4 } }}>
@@ -207,7 +217,13 @@ export const LoginForm = () => {
           sx={{ ml: 2 }}
         >
           <Typography variant="subtitle2" color="textSecondary">
-            {action === 'Login' ? 'Sign up' : 'Login'}
+            {submitting ? (
+              <CircularProgress />
+            ) : action === 'Login' ? (
+              'Sign up'
+            ) : (
+              'Login'
+            )}
           </Typography>
         </Button>
 

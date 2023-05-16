@@ -1,3 +1,5 @@
+import { CollectionKey } from '@eweser/db';
+
 const dummyUserName = 'dummy-user123';
 const dummyUserPass = 'dumdum';
 
@@ -23,3 +25,12 @@ export const DEV_PASSWORD =
 
 const localWebRtcServer = 'ws://localhost:4444';
 export const WEB_RTC_PEERS = dev || ci ? [localWebRtcServer] : undefined;
+
+const aliasSeed = 'notes-default';
+const collectionKey = CollectionKey.notes;
+
+export const initialRoomConnect = {
+  collectionKey,
+  aliasSeed,
+  name: 'My Notes',
+};
