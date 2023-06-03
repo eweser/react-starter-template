@@ -11,14 +11,12 @@ function App() {
   const { palette } = useTheme();
   return (
     <Box
+      className="flex-grow-container"
       sx={{
-        display: 'flex',
-        flex: 1,
-        pt: 6,
-        width: '100%',
+        pt: 5,
+        backgroundColor: palette.background.default,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: palette.background.default,
       }}
     >
       <Nav />

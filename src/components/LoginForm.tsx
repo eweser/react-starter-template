@@ -133,10 +133,11 @@ export const LoginForm = () => {
         accessibility-role="form"
         sx={{
           '& .MuiTextField-root': {
-            my: 4,
             width: { xs: '100%', md: '45ch' },
-            display: 'flex',
           },
+          display: 'flex',
+          flexDirection: 'column',
+          rowGap: 4,
         }}
         padding={{ xs: 2, md: 4 }}
       >
@@ -214,7 +215,6 @@ export const LoginForm = () => {
           onClick={() => {
             setAction(action === 'Login' ? 'Sign up' : 'Login');
           }}
-          sx={{ ml: 2 }}
         >
           <Typography variant="subtitle2" color="textSecondary">
             {submitting ? (
@@ -228,7 +228,6 @@ export const LoginForm = () => {
         </Button>
 
         <Typography
-          sx={{ mt: 1 }}
           variant="subtitle2"
           color={hasSubmitError ? 'error' : 'textSecondary'}
         >

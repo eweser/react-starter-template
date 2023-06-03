@@ -15,9 +15,9 @@ export const Nav = () => {
   return (
     <>
       <AppBar position="fixed" enableColorOnDark>
-        <Toolbar>
+        <Toolbar style={{ minHeight: 0 }} sx={{ p: 0.5 }}>
           <IconButton
-            size="large"
+            size="small"
             edge="start"
             color="inherit"
             aria-label="menu"
