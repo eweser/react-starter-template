@@ -1,9 +1,11 @@
-import { Box, Button, Card, CircularProgress } from '@mui/material';
+import { Box, CircularProgress, Fab } from '@mui/material';
 import { useCollection } from '../CollectionContext';
 import type { Documents, Note, Room } from '@eweser/db';
 import { useDatabase } from '../DatabaseContext';
 import { useState } from 'react';
 import Editor from './Editor';
+import { Add } from '@mui/icons-material';
+import { NotePreview } from './NotePreview';
 
 export const NotesPage = () => {
   const { currentRoom } = useCollection<Note>();
@@ -52,27 +54,35 @@ const NotesInner = ({ currentRoom }: { currentRoom: Room<Note> }) => {
 
   return (
     <Box className="flex-grow-container">
-      <Box sx={{ width: 300 }}>
-        <Button variant="contained" onClick={() => createNote()}>
-          New note
-        </Button>
+      <Box
+        sx={{
+          width: 300,
+          rowGap: 2,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <Fab
+          variant="circular"
+          sx={{ position: 'fixed', bottom: 16, right: 16 }}
+          onClick={() => createNote()}
+        >
+          <Add />
+        </Fab>
 
         {Object.keys(notes).map((id) => {
           const note = notes[id];
-          if (note && !notes[id]?._deleted)
+
+          if (note && !notes[id]?._deleted) {
             return (
-              <Card onClick={() => setSelectedNote(note._id)} key={note._id}>
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteNote(note);
-                  }}
-                >
-                  X
-                </Button>
-                {note.text}
-              </Card>
+              <NotePreview
+                key={id}
+                note={note}
+                deleteNote={deleteNote}
+                onClick={() => setSelectedNote}
+              />
             );
+          }
         })}
       </Box>
       <Editor
