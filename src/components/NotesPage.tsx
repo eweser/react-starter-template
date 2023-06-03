@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Fab } from '@mui/material';
+import { Box, CircularProgress, Divider, Fab } from '@mui/material';
 import { useCollection } from '../CollectionContext';
 import type { Documents, Note, Room } from '@eweser/db';
 import { useDatabase } from '../DatabaseContext';
@@ -53,43 +53,68 @@ const NotesInner = ({ currentRoom }: { currentRoom: Room<Note> }) => {
   };
 
   return (
-    <Box className="flex-grow-container">
+    <Box
+      className="flex-grow-container"
+      sx={{
+        flexDirection: {
+          xs: 'column',
+          sm: 'row',
+        },
+      }}
+    >
       <Box
         sx={{
-          width: 300,
+          height: '100%',
+          overflow: 'auto',
+          width: {
+            xs: '100%',
+            sm: 300,
+          },
+          order: {
+            xs: 2,
+            sm: 1,
+          },
           rowGap: 2,
           display: 'flex',
           flexDirection: 'column',
         }}
       >
-        <Fab
-          variant="circular"
-          sx={{ position: 'fixed', bottom: 16, right: 16 }}
-          onClick={() => createNote()}
-        >
-          <Add />
-        </Fab>
-
         {Object.keys(notes).map((id) => {
           const note = notes[id];
 
           if (note && !notes[id]?._deleted) {
             return (
-              <NotePreview
-                key={id}
-                note={note}
-                deleteNote={deleteNote}
-                onClick={() => setSelectedNote}
-              />
+              <div key={id}>
+                <NotePreview
+                  key={id}
+                  note={note}
+                  deleteNote={deleteNote}
+                  onClick={() => setSelectedNote(id)}
+                />
+                <Divider />
+              </div>
             );
           }
         })}
       </Box>
       <Editor
+        sx={{
+          order: {
+            xs: 1,
+            sm: 2,
+          },
+        }}
         handleChange={(text) => updateNoteText(text, notes[selectedNote])}
         placeholder="New Note"
         value={notes[selectedNote]?.text}
       />
+      <Fab
+        variant="circular"
+        sx={{ position: 'fixed', bottom: 16, right: 24 }}
+        onClick={() => createNote()}
+      >
+        <Add />
+      </Fab>
     </Box>
   );
 };

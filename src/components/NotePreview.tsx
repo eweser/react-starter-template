@@ -1,7 +1,8 @@
-import { Card, IconButton } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 import type { Note } from '@eweser/db';
 import { useState } from 'react';
 import { DeleteRounded } from '@mui/icons-material';
+
 export const NotePreview = ({
   note,
   deleteNote,
@@ -12,10 +13,23 @@ export const NotePreview = ({
   onClick: () => void;
 }) => {
   const [hovered, setHovered] = useState(false);
+
   return (
-    <Card
+    <Box
       onClick={onClick}
-      sx={{ p: 2, cursor: 'pointer', position: 'relative' }}
+      sx={{
+        p: 2,
+        pb: 0,
+        mb: 2,
+        cursor: 'pointer',
+        position: 'relative',
+
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        display: '-webkit-box',
+        WebkitLineClamp: '3',
+        WebkitBoxOrient: 'vertical',
+      }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -31,6 +45,6 @@ export const NotePreview = ({
           <DeleteRounded fontSize="small" />
         </IconButton>
       )}
-    </Card>
+    </Box>
   );
 };

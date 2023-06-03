@@ -19,7 +19,7 @@ export const CustomThemeProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
     <CustomThemeContext.Provider value={{ themeType, toggleTheme }}>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
+        <CssBaseline enableColorScheme />
         {children}
       </ThemeProvider>
     </CustomThemeContext.Provider>
