@@ -3,11 +3,13 @@ import { Database } from '@eweser/db';
 import type { FC, PropsWithChildren } from 'react';
 import { useCallback } from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { initialRoomConnect } from './config';
+import { WEB_RTC_PEERS, initialRoomConnect } from './config';
 
 const db = new Database({
-  //
-  debug: true,
+  // set `debug` to true to see debug messages in the console
+  // debug: true,
+  // use this to sync webRTC locally with the test-rpc-server started with `npm run start-test-rpc-server`
+  webRTCPeers: WEB_RTC_PEERS,
 });
 
 export type LoadingStatus =
