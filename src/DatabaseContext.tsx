@@ -7,13 +7,13 @@ import { initialRoomConnect } from './config';
 
 const db = new Database({
   //
-  //  debug: true
+  debug: true,
 });
 
 export type LoadingStatus =
   | 'initial'
-  | 'loading'
-  | 'ready'
+  | 'loading' // only called during load from localStorage
+  | 'ready' // when either load or login is complete and at least the local db is ready to use (but remote might not be connected yet)
   | 'signingIn'
   | 'failed';
 
@@ -54,12 +54,17 @@ export const DatabaseProvider: FC<PropsWithChildren> = ({ children }) => {
       } else if (event === 'login') {
         if (message === 'starting login') {
           setErrorMessage('');
-          setLoadingStatus('signingIn');
+          if (db.loginStatus !== 'loading') {
+            // Because 'load' also calls login, ignore if already loading
+            setLoadingStatus('signingIn');
+          }
         }
       } else if (event === 'signup') {
         if (message === 'starting signup') {
           setErrorMessage('');
-          setLoadingStatus('signingIn');
+          if (db.loginStatus !== 'loading') {
+            setLoadingStatus('signingIn');
+          }
         }
       } else if (event === `onlineChange`) {
         setOnline(data?.online ?? false);
