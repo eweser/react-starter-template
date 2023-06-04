@@ -1,5 +1,8 @@
+import type { Room, Note } from '@eweser/db';
 import type { SxProps } from '@mui/material';
 import { styled } from '@mui/material';
+import { useDatabase } from '../DatabaseContext';
+import { useState } from 'react';
 
 const StyledTextarea = styled('textarea')(
   ({ theme: { palette } }) => `
@@ -24,26 +27,34 @@ const StyledTextarea = styled('textarea')(
 );
 
 const Editor = ({
-  handleChange,
   placeholder,
-  value,
   sx,
+  room,
+  selectedNoteId,
 }: {
-  handleChange: (text: string) => void;
   placeholder?: string;
-  value?: string;
   sx?: SxProps;
+  room: Room<Note>;
+  selectedNoteId: string;
 }) => {
+  const { db } = useDatabase();
+  const Notes = db.getDocuments(room);
+  const [noteText, setNoteText] = useState(Notes.get(selectedNoteId)?.text);
+  const updateNoteText = (text: string) => {
+    const note = Notes.get(selectedNoteId);
+    if (!note || !text) return;
+    note.text = text;
+    setNoteText(text);
+    Notes.set(note);
+  };
   return (
     <StyledTextarea
       style={{ height: 'initial' }}
       sx={sx}
       aria-label="empty textarea"
       placeholder={placeholder}
-      value={value}
-      onChange={(e) => {
-        handleChange(e.target.value);
-      }}
+      value={noteText}
+      onChange={(e) => updateNoteText(e.target.value)}
     />
   );
 };

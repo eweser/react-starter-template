@@ -1,57 +1,23 @@
-import { Box, CircularProgress, Divider, Fab } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import { useCollection } from '../CollectionContext';
-import type { Documents, Note, Room } from '@eweser/db';
-import { useDatabase } from '../DatabaseContext';
+import type { Note } from '@eweser/db';
 import { useState } from 'react';
 import Editor from './Editor';
-import { Add } from '@mui/icons-material';
-import { NotePreview } from './NotePreview';
+import { Roomslist } from './RoomsList';
+import { initialRoomConnect } from '../config';
+
+// needs a room provider for each list of previews, and for the editor.
+// the parent state should have selected room, and selected note
 
 export const NotesPage = () => {
-  const { currentRoom } = useCollection<Note>();
+  const { connectedRooms } = useCollection<Note>();
 
-  if (!currentRoom?.ydoc) return <CircularProgress />;
-  return <NotesInner currentRoom={currentRoom} />;
-};
-
-const NotesInner = ({ currentRoom }: { currentRoom: Room<Note> }) => {
-  const { db } = useDatabase();
-  const Notes = db.getDocuments(currentRoom);
-
-  const [notes, setNotes] = useState<Documents<Note>>(
-    Notes.sortByRecent(Notes.getUndeleted())
-  );
-
-  const [selectedNote, setSelectedNote] = useState(
-    Object.keys(Notes.sortByRecent(Notes.getUndeleted()))[0]
-  );
-
-  // listen for changes to the ydoc and update the state
-  Notes.onChange((_event) => {
-    const unDeleted = Notes.sortByRecent(Notes.getUndeleted());
-    setNotes(unDeleted);
-    if (!unDeleted[selectedNote]) {
-      setSelectedNote(Object.keys(unDeleted)[0]);
-    }
+  const [selectedNote, setSelectedNote] = useState({
+    roomAliasSeed: initialRoomConnect.aliasSeed,
+    id: '',
   });
 
-  const createNote = () => {
-    // Notes.new will fill in the metadata for you, including _id with a random string and _updated with the current timestamp
-    const newNote = Notes.new({ text: 'New Note Body' });
-    setSelectedNote(newNote._id);
-  };
-
-  const updateNoteText = (text: string, note?: Note) => {
-    if (!note) return;
-    note.text = text;
-    // Notes.set will update _updated with the current timestamp
-    Notes.set(note);
-  };
-
-  const deleteNote = (note: Note) => {
-    Notes.delete(note._id);
-  };
-
+  if (Object.keys(connectedRooms).length === 0) return <CircularProgress />;
   return (
     <Box
       className="flex-grow-container"
@@ -74,47 +40,38 @@ const NotesInner = ({ currentRoom }: { currentRoom: Room<Note> }) => {
             xs: 2,
             sm: 1,
           },
-          rowGap: 2,
           display: 'flex',
           flexDirection: 'column',
         }}
       >
-        {Object.keys(notes).map((id) => {
-          const note = notes[id];
-
-          if (note && !notes[id]?._deleted) {
-            return (
-              <div key={id}>
-                <NotePreview
-                  key={id}
-                  note={note}
-                  deleteNote={deleteNote}
-                  onClick={() => setSelectedNote(id)}
-                />
-                <Divider />
-              </div>
-            );
-          }
-        })}
+        <Roomslist
+          selectedNote={selectedNote}
+          setSelectedNote={setSelectedNote}
+        />
       </Box>
-      <Editor
-        sx={{
-          order: {
-            xs: 1,
-            sm: 2,
-          },
-        }}
-        handleChange={(text) => updateNoteText(text, notes[selectedNote])}
-        placeholder="New Note"
-        value={notes[selectedNote]?.text}
-      />
-      <Fab
-        variant="circular"
-        sx={{ position: 'fixed', bottom: 16, right: 24 }}
-        onClick={() => createNote()}
-      >
-        <Add />
-      </Fab>
+      {connectedRooms[selectedNote.roomAliasSeed] ? (
+        <Editor
+          sx={{
+            order: {
+              xs: 1,
+              sm: 2,
+            },
+          }}
+          key={selectedNote.roomAliasSeed + selectedNote.id}
+          room={connectedRooms[selectedNote.roomAliasSeed]}
+          placeholder="New Note"
+          selectedNoteId={selectedNote.id}
+        />
+      ) : (
+        <CircularProgress
+          sx={{
+            order: {
+              xs: 1,
+              sm: 2,
+            },
+          }}
+        />
+      )}
     </Box>
   );
 };

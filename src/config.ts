@@ -26,11 +26,11 @@ export const DEV_PASSWORD =
 const localWebRtcServer = 'ws://localhost:4444';
 export const WEB_RTC_PEERS = dev || ci ? [localWebRtcServer] : undefined;
 
-const aliasSeed = 'notes-default';
+export const defaultRoomAliasSeed = 'default';
 const collectionKey = CollectionKey.notes;
 
 export const initialRoomConnect = {
   collectionKey,
-  aliasSeed,
+  aliasSeed: defaultRoomAliasSeed,
   name: 'My Notes',
 };

@@ -7,26 +7,29 @@ import {
   useEffect,
   useState,
 } from 'react';
+
 export interface CollectionContextValue<T extends Document = Document> {
   roomsList: {
     [roomAlias: string]: RoomMetaData | undefined;
   };
-  currentRoom: Room<T> | null;
-  loadingRoom: boolean;
+  connectedRooms: {
+    [aliasSeed: string]: Room<T>;
+  };
+  loadingRoom: string | null;
   roomError: string;
   creatingRoom: boolean;
   handleCreateRoom: (name: string) => void;
-  handleSelectRoom: (aliasSeed: string) => void;
+  handleConnectRoom: (aliasSeed: string) => void;
 }
 
 const CollectionContext = createContext<CollectionContextValue>({
   roomsList: {},
-  currentRoom: null,
-  loadingRoom: false,
+  connectedRooms: {},
+  loadingRoom: null,
   roomError: '',
   creatingRoom: false,
   handleCreateRoom: () => null,
-  handleSelectRoom: () => null,
+  handleConnectRoom: () => null,
 });
 
 export const CollectionProvider = <T extends Document>({
@@ -35,75 +38,97 @@ export const CollectionProvider = <T extends Document>({
   children,
 }: {
   collectionKey: CollectionKey;
+  /** an initial room to connect */
   aliasSeed?: string;
   children: React.ReactNode;
 }) => {
   const { db } = useDatabase();
   // list out all of the notes rooms in the registry.
   const roomsList = db.getCollectionRegistry(collectionKey);
-  // allow the user to select one to connect to
-  // Pass the current room down to the NotesInternal component
-  const [currentRoom, setCurrentRoom] = useState<Room<T> | null>(null);
+  const [connectedRooms, setConnectedRooms] = useState<{
+    [aliasSeed: string]: Room<T>;
+  }>({});
+
   // allow creating new rooms.
   const [creatingRoom, setCreatingRoom] = useState(false);
-  const [loadingRoom, setLoadingRoom] = useState(false);
+  const [loadingRoom, setLoadingRoom] = useState<string | null>(null);
   const [roomError, setRoomError] = useState('');
 
-  const handleCreateRoom = async (name: string) => {
-    try {
-      setRoomError('');
-      setCreatingRoom(true);
-      const seed = name.toLowerCase();
-      await db.createAndConnectRoom<T>({
-        collectionKey,
-        aliasSeed: seed,
-        name,
-        // can add a topic if you wish
-        topic: '',
-      });
-      handleSelectRoom(seed);
-    } catch (error: any) {
-      setRoomError(error.message);
-    } finally {
-      setCreatingRoom(false);
-    }
-  };
-
-  const handleSelectRoom = useCallback(
+  const handleConnectRoom = useCallback(
     async (aliasSeed: string) => {
       try {
-        setCurrentRoom(null);
-        setLoadingRoom(true);
+        setLoadingRoom(aliasSeed);
         const onlineRoom = await db.loadAndConnectRoom<T>(
           { collectionKey, aliasSeed },
-          (offlineRoom) => setCurrentRoom(offlineRoom)
+          (offlineRoom) => {
+            setConnectedRooms((prev) => ({
+              ...prev,
+              [aliasSeed]: offlineRoom,
+            }));
+          }
         );
-        setCurrentRoom(onlineRoom);
+        setConnectedRooms((prev) => ({ ...prev, [aliasSeed]: onlineRoom }));
       } catch (error: any) {
         setRoomError(error.message);
       } finally {
-        setLoadingRoom(false);
+        setLoadingRoom(null);
       }
     },
     [collectionKey, db]
   );
 
+  const handleCreateRoom = useCallback(
+    async (name: string) => {
+      try {
+        setRoomError('');
+        setCreatingRoom(true);
+        const seed = name.toLowerCase();
+        await db.createAndConnectRoom<T>({
+          collectionKey,
+          aliasSeed: seed,
+          name,
+          // can add a topic if you wish
+          topic: '',
+        });
+        handleConnectRoom(seed);
+      } catch (error: any) {
+        setRoomError(error.message);
+      } finally {
+        setCreatingRoom(false);
+      }
+    },
+    [collectionKey, db, handleConnectRoom]
+  );
+
   useEffect(() => {
-    if (aliasSeed && !loadingRoom && !currentRoom) {
-      handleSelectRoom(aliasSeed);
+    if (aliasSeed && !loadingRoom && !connectedRooms[aliasSeed]) {
+      {
+        if (!roomsList[aliasSeed]) {
+          handleCreateRoom(aliasSeed);
+        } else {
+          handleConnectRoom(aliasSeed);
+        }
+      }
     }
-  }, [currentRoom, handleSelectRoom, aliasSeed, loadingRoom]);
+  }, [
+    connectedRooms,
+    handleConnectRoom,
+    aliasSeed,
+    loadingRoom,
+    roomsList,
+    handleCreateRoom,
+  ]);
 
   return (
     <CollectionContext.Provider
       value={{
         roomsList,
-        currentRoom,
+        connectedRooms,
         loadingRoom,
         roomError,
         creatingRoom,
         handleCreateRoom,
-        handleSelectRoom,
+        handleConnectRoom,
       }}
     >
       {children}
