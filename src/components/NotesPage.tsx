@@ -3,7 +3,7 @@ import { useCollection } from '../CollectionContext';
 import type { Note } from '@eweser/db';
 import { useState } from 'react';
 import Editor from './Editor';
-import { Roomslist } from './RoomsList';
+import { RoomsList } from './RoomsList';
 import { initialRoomConnect } from '../config';
 
 // needs a room provider for each list of previews, and for the editor.
@@ -44,7 +44,7 @@ export const NotesPage = () => {
           flexDirection: 'column',
         }}
       >
-        <Roomslist
+        <RoomsList
           selectedNote={selectedNote}
           setSelectedNote={setSelectedNote}
         />

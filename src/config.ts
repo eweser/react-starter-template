@@ -34,3 +34,5 @@ export const initialRoomConnect = {
   aliasSeed: defaultRoomAliasSeed,
   name: 'My Notes',
 };
+
+export const defaultNoteText = 'New Note';
