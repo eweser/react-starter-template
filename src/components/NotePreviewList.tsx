@@ -10,7 +10,8 @@ import { useDatabase } from '../DatabaseContext';
 import { NotePreview } from './NotePreview';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import { Add } from '@mui/icons-material';
-import { defaultNoteText } from '../config';
+
+const defaultNoteText = 'New Note';
 
 export const NotePreviewList = ({
   room,
@@ -62,7 +63,7 @@ export const NotePreviewList = ({
     Notes.delete(note._id);
   };
   return (
-    <AccordionDetails>
+    <AccordionDetails sx={{ background: 'background.default' }}>
       <Button
         onClick={createNote}
         color="secondary"
@@ -71,7 +72,11 @@ export const NotePreviewList = ({
         size="small"
         sx={{
           mb: 1,
-          alignSelf: 'flex-end',
+          ml: 2,
+          p: 0,
+          fontSize: '0.75rem',
+          lineHeight: '1.5rem',
+          height: 'fit-content',
         }}
       >
         New
