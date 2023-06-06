@@ -105,9 +105,15 @@ export const CollectionProvider = <T extends Document>({
   const handleDeleteRoom = useCallback(
     async (aliasSeed: string) => {
       try {
+        confirm('Are you sure you want to delete this folder?');
         await db.deleteRoom({ collectionKey, aliasSeed });
+        setConnectedRooms((prev) => {
+          const newConnectedRooms = { ...prev };
+          delete newConnectedRooms[aliasSeed];
+          return newConnectedRooms;
+        });
       } catch (error: any) {
-        setRoomError(error.message);
+        alert(error.message);
       }
     },
     [collectionKey, db]

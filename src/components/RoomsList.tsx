@@ -26,7 +26,12 @@ import { NotePreviewList } from './NotePreviewList';
 import { useDatabase } from '../DatabaseContext';
 import { defaultNoteText, initialRoomConnect } from '../config';
 import CloseIcon from '@mui/icons-material/Close';
-import { DeleteOutline, Edit, MoreHorizRounded } from '@mui/icons-material';
+import {
+  DeleteOutline,
+  Edit,
+  MoreHorizRounded,
+  Share,
+} from '@mui/icons-material';
 interface CreateRoomModalProps extends Omit<DialogProps, 'children'> {
   newRoomName: string;
   setNewRoomName: (name: string) => void;
@@ -276,10 +281,6 @@ const RoomAccordion = ({
                       }}
                       open={roomMenuOpen}
                     >
-                      <MenuItem disabled onClick={handleRoomMenuClose}>
-                        <Edit sx={{ mr: 2 }} fontSize={'small'} />
-                        Rename
-                      </MenuItem>
                       <MenuItem
                         onClick={() => {
                           handleRoomMenuClose();
@@ -289,7 +290,14 @@ const RoomAccordion = ({
                         <DeleteOutline sx={{ mr: 2 }} fontSize={'small'} />
                         Delete
                       </MenuItem>
-                      {/* <MenuItem>Share</MenuItem> */}
+                      <MenuItem disabled onClick={handleRoomMenuClose}>
+                        <Edit sx={{ mr: 2 }} fontSize={'small'} />
+                        Rename
+                      </MenuItem>
+                      <MenuItem disabled>
+                        <Share sx={{ mr: 2 }} fontSize={'small'} />
+                        Share
+                      </MenuItem>
                     </Menu>
                   }
                 </IconButton>
