@@ -16,7 +16,8 @@ export const env =
 export const dev = env === 'dev';
 export const ci = env === 'ci';
 
-export const showSignup = env !== 'prod';
+export const showSignup = false;
+// export const showSignup = env !== 'prod';
 
 export const DEV_USERNAME =
   import.meta.env.VITE_DEV_USERNAME ?? dev ? dummyUserName : '';

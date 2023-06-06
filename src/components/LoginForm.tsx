@@ -132,12 +132,12 @@ export const LoginForm = () => {
   const submitDisabled = requiredEmpty || submitting;
 
   return (
-    <Paper sx={{ width: { xs: '100%', md: 'auto' }, margin: { xs: 2, md: 4 } }}>
+    <Paper sx={{ margin: { xs: 2, md: 4 } }}>
       <Box
         accessibility-role="form"
         sx={{
           '& .MuiTextField-root': {
-            width: { xs: '100%', md: '45ch' },
+            width: '45ch',
           },
           display: 'flex',
           flexDirection: 'column',
@@ -232,7 +232,7 @@ export const LoginForm = () => {
             </Typography>
           </Button>
         ) : (
-          <Box>
+          <Box sx={{ width: '45ch' }}>
             <Body1>
               * No matrix account? Sign up at&nbsp;
               <a href="https://app.element.io/">element.io</a> with the username
