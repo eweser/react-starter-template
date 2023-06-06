@@ -132,13 +132,10 @@ export const LoginForm = () => {
   const submitDisabled = requiredEmpty || submitting;
 
   return (
-    <Paper sx={{ margin: { xs: 2, md: 4 } }}>
+    <Paper sx={{ maxWidth: '50ch', margin: { xs: 2, md: 4 } }}>
       <Box
         accessibility-role="form"
         sx={{
-          '& .MuiTextField-root': {
-            width: '45ch',
-          },
           display: 'flex',
           flexDirection: 'column',
           rowGap: 4,
@@ -232,12 +229,23 @@ export const LoginForm = () => {
             </Typography>
           </Button>
         ) : (
-          <Box sx={{ width: '45ch' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              rowGap: 1,
+              px: 2,
+              color: 'text.secondary',
+            }}
+          >
+            <Body1>* No matrix account? </Body1>
             <Body1>
-              * No matrix account? Sign up at&nbsp;
-              <a href="https://app.element.io/">element.io</a> with the username
-              and password option
+              Sign up with&nbsp;
+              <a href="https://app.element.io/">element.io</a>,&nbsp;
+              <a href="https://fluffychat.im/web/">fluffychat</a> or any other
+              Matrix provider.
             </Body1>
+            <Body1>Use the username and password option</Body1>
           </Box>
         )}
 
