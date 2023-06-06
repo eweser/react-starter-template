@@ -22,10 +22,12 @@ import {
   DEV_PASSWORD,
   MATRIX_SERVER,
   initialRoomConnect,
+  showSignup,
 } from '../config';
 
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { Body1 } from './library/Typography';
 
 export interface LoginFormProps {
   setLoggedIn: (loggedIn: boolean) => void;
@@ -47,7 +49,9 @@ const initialLoginData: LoginData = {
 export const LoginForm = () => {
   const { db, errorMessage } = useDatabase();
 
-  const [action, setAction] = useState<'Login' | 'Sign up'>('Sign up');
+  const [action, setAction] = useState<'Login' | 'Sign up'>(
+    showSignup ? 'Sign up' : 'Login'
+  );
   const [loginData, setLoginData] = useState(initialLoginData);
   const [error, setError] = useState('');
 
@@ -211,21 +215,31 @@ export const LoginForm = () => {
         >
           {action}
         </Button>
-        <Button
-          onClick={() => {
-            setAction(action === 'Login' ? 'Sign up' : 'Login');
-          }}
-        >
-          <Typography variant="subtitle2" color="textSecondary">
-            {submitting ? (
-              <CircularProgress />
-            ) : action === 'Login' ? (
-              'Sign up'
-            ) : (
-              'Login'
-            )}
-          </Typography>
-        </Button>
+        {showSignup ? (
+          <Button
+            onClick={() => {
+              setAction(action === 'Login' ? 'Sign up' : 'Login');
+            }}
+          >
+            <Typography variant="subtitle2" color="textSecondary">
+              {submitting ? (
+                <CircularProgress />
+              ) : action === 'Login' ? (
+                'Sign up'
+              ) : (
+                'Login'
+              )}
+            </Typography>
+          </Button>
+        ) : (
+          <Box>
+            <Body1>
+              * No matrix account? Sign up at&nbsp;
+              <a href="https://app.element.io/">element.io</a> with the username
+              and password option
+            </Body1>
+          </Box>
+        )}
 
         <Typography
           variant="subtitle2"
