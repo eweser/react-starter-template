@@ -1,4 +1,5 @@
-import type { CollectionKey, RoomMetaData, Document, Room } from '@eweser/db';
+import type { RoomMetaData, Document, Room, Note } from '@eweser/db';
+import { CollectionKey } from '@eweser/db';
 import { useDatabase } from './DatabaseContext';
 import {
   createContext,
@@ -18,7 +19,7 @@ export interface CollectionContextValue<T extends Document = Document> {
   loadingRoom: string | null;
   roomError: string;
   creatingRoom: boolean;
-  handleCreateRoom: (name: string) => void;
+  handleCreateRoom: (name: string) => Promise<Room<T> | undefined>;
   handleConnectRoom: (aliasSeed: string) => void;
   handleDeleteRoom: (aliasSeed: string) => Promise<void>;
 }
@@ -29,8 +30,8 @@ const CollectionContext = createContext<CollectionContextValue>({
   loadingRoom: null,
   roomError: '',
   creatingRoom: false,
-  handleCreateRoom: () => null,
-  handleConnectRoom: () => null,
+  handleCreateRoom: async () => undefined,
+  handleConnectRoom: () => undefined,
   handleDeleteRoom: () => Promise.resolve(),
 });
 
@@ -84,8 +85,8 @@ export const CollectionProvider = <T extends Document>({
       try {
         setRoomError('');
         setCreatingRoom(true);
-        const seed = name.toLowerCase();
-        await db.createAndConnectRoom<T>({
+        const seed = name.toLowerCase().trim().replaceAll(' ', '-');
+        const room = await db.createAndConnectRoom<T>({
           collectionKey,
           aliasSeed: seed,
           name,
@@ -93,6 +94,7 @@ export const CollectionProvider = <T extends Document>({
           topic: '',
         });
         handleConnectRoom(seed);
+        return room;
       } catch (error: any) {
         setRoomError(error.message);
       } finally {
@@ -165,3 +167,17 @@ export const useCollection = <
   }
   return context as CollectionContextValue<T>;
 };
+
+export const NotesProvider = ({
+  aliasSeed,
+  children,
+}: {
+  aliasSeed?: string;
+  children: React.ReactNode;
+}) => (
+  <CollectionProvider collectionKey={CollectionKey.notes} aliasSeed={aliasSeed}>
+    {children}
+  </CollectionProvider>
+);
+
+export const useNotes = () => useCollection<Note>();

@@ -1,4 +1,4 @@
-import { getAliasSeedFromAlias, type Note } from '@eweser/db';
+import { getAliasSeedFromAlias } from '@eweser/db';
 import type { DialogProps } from '@mui/material';
 import {
   Box,
@@ -14,7 +14,7 @@ import {
   TextField,
 } from '@mui/material';
 import { useState } from 'react';
-import { useCollection } from '../CollectionContext';
+import { useNotes } from '../CollectionContext';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
@@ -24,7 +24,7 @@ import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import { H6 } from './library/Typography';
 import { NotePreviewList } from './NotePreviewList';
 import { useDatabase } from '../DatabaseContext';
-import { defaultNoteText, initialRoomConnect } from '../config';
+import { defaultNoteText } from '../config';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   DeleteOutline,
@@ -105,24 +105,19 @@ export const RoomsList = ({
   }) => void;
 }) => {
   const { db } = useDatabase();
-  const { roomsList } = useCollection<Note>();
+  const { roomsList, handleCreateRoom } = useNotes();
   const [createRoomModalOpen, setCreateRoomModalOpen] = useState(false);
   const [creatingRoom, setCreatingRoom] = useState(false);
   const [newRoomName, setNewRoomName] = useState('');
 
-  const handleCreateRoom = async () => {
+  const handleCreateFolder = async () => {
     try {
       setCreatingRoom(true);
-      const seed = newRoomName.toLowerCase();
-      const newRoom = await db.createAndConnectRoom<Note>({
-        collectionKey: initialRoomConnect.collectionKey,
-        aliasSeed: seed,
-        name: newRoomName,
-        // can add a topic if you wish
-        topic: '',
-      });
-      const Notes = db.getDocuments(newRoom);
 
+      const newRoom = await handleCreateRoom(newRoomName);
+      if (!newRoom) throw new Error('Could not create room');
+      const Notes = db.getDocuments(newRoom);
+      const seed = getAliasSeedFromAlias(newRoom.roomAlias);
       const newNote = Notes.new({ text: defaultNoteText });
       setSelectedNote({
         roomAliasSeed: seed,
@@ -178,7 +173,7 @@ export const RoomsList = ({
         newRoomName={newRoomName}
         setNewRoomName={setNewRoomName}
         creatingRoom={creatingRoom}
-        handleCreateRoom={handleCreateRoom}
+        handleCreateRoom={handleCreateFolder}
         onClose={() => setCreateRoomModalOpen(false)}
       />
     </>
@@ -207,7 +202,7 @@ const RoomAccordion = ({
 }) => {
   const { db } = useDatabase();
   const { connectedRooms, handleConnectRoom, handleDeleteRoom, loadingRoom } =
-    useCollection<Note>();
+    useNotes();
 
   const [expanded, setExpanded] = useState(
     selectedNote.roomAliasSeed === aliasSeed

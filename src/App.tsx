@@ -2,7 +2,7 @@ import { Box, CircularProgress, useTheme } from '@mui/material';
 import { Nav } from './components/Nav';
 import { useDatabase } from './DatabaseContext';
 import { LoginForm } from './components/LoginForm';
-import { CollectionProvider } from './CollectionContext';
+import { NotesProvider } from './CollectionContext';
 import { initialRoomConnect } from './config';
 import { NotesPage } from './components/NotesPage';
 
@@ -23,9 +23,9 @@ function App() {
       {loadingStatus === 'initial' || loadingStatus === 'loading' ? (
         <CircularProgress size={80} />
       ) : loadingStatus === 'ready' ? (
-        <CollectionProvider {...initialRoomConnect}>
+        <NotesProvider {...initialRoomConnect}>
           <NotesPage />
-        </CollectionProvider>
+        </NotesProvider>
       ) : (
         <LoginForm />
       )}

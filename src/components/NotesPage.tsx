@@ -1,6 +1,5 @@
 import { Box, CircularProgress } from '@mui/material';
-import { useCollection } from '../CollectionContext';
-import type { Note } from '@eweser/db';
+import { useNotes } from '../CollectionContext';
 import { useState } from 'react';
 import Editor from './Editor';
 import { RoomsList } from './RoomsList';
@@ -10,7 +9,7 @@ import { initialRoomConnect } from '../config';
 // the parent state should have selected room, and selected note
 
 export const NotesPage = () => {
-  const { connectedRooms } = useCollection<Note>();
+  const { connectedRooms } = useNotes();
 
   const [selectedNote, setSelectedNote] = useState({
     roomAliasSeed: initialRoomConnect.aliasSeed,
