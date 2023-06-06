@@ -20,6 +20,7 @@ export interface CollectionContextValue<T extends Document = Document> {
   creatingRoom: boolean;
   handleCreateRoom: (name: string) => void;
   handleConnectRoom: (aliasSeed: string) => void;
+  handleDeleteRoom: (aliasSeed: string) => Promise<void>;
 }
 
 const CollectionContext = createContext<CollectionContextValue>({
@@ -30,6 +31,7 @@ const CollectionContext = createContext<CollectionContextValue>({
   creatingRoom: false,
   handleCreateRoom: () => null,
   handleConnectRoom: () => null,
+  handleDeleteRoom: () => Promise.resolve(),
 });
 
 export const CollectionProvider = <T extends Document>({
@@ -100,6 +102,17 @@ export const CollectionProvider = <T extends Document>({
     [collectionKey, db, handleConnectRoom]
   );
 
+  const handleDeleteRoom = useCallback(
+    async (aliasSeed: string) => {
+      try {
+        await db.deleteRoom({ collectionKey, aliasSeed });
+      } catch (error: any) {
+        setRoomError(error.message);
+      }
+    },
+    [collectionKey, db]
+  );
+
   useEffect(() => {
     if (aliasSeed && !loadingRoom && !connectedRooms[aliasSeed]) {
       {
@@ -129,6 +142,7 @@ export const CollectionProvider = <T extends Document>({
         creatingRoom,
         handleCreateRoom,
         handleConnectRoom,
+        handleDeleteRoom,
       }}
     >
       {children}

@@ -9,6 +9,8 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Menu,
+  MenuItem,
   TextField,
 } from '@mui/material';
 import { useState } from 'react';
@@ -17,12 +19,14 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import { H6 } from './library/Typography';
 import { NotePreviewList } from './NotePreviewList';
 import { useDatabase } from '../DatabaseContext';
 import { defaultNoteText, initialRoomConnect } from '../config';
 import CloseIcon from '@mui/icons-material/Close';
+import { DeleteOutline, Edit, MoreHorizRounded } from '@mui/icons-material';
 interface CreateRoomModalProps extends Omit<DialogProps, 'children'> {
   newRoomName: string;
   setNewRoomName: (name: string) => void;
@@ -196,12 +200,22 @@ const RoomAccordion = ({
     id: string;
   }) => void;
 }) => {
-  const { connectedRooms, handleConnectRoom, loadingRoom } =
+  const { db } = useDatabase();
+  const { connectedRooms, handleConnectRoom, handleDeleteRoom, loadingRoom } =
     useCollection<Note>();
 
   const [expanded, setExpanded] = useState(
     selectedNote.roomAliasSeed === aliasSeed
   );
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const roomMenuOpen = Boolean(anchorEl);
+  const handleRoomMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleRoomMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleAccordionChange = (expand: boolean) => {
     if (expand && !connectedRooms[aliasSeed]) {
@@ -216,18 +230,72 @@ const RoomAccordion = ({
     >
       <AccordionSummary
         key={connectedRooms[aliasSeed]?.roomAlias ?? aliasSeed}
-        expandIcon={
-          expanded && loadingRoom === aliasSeed ? (
-            <CircularProgress size={20} />
-          ) : (
-            <ExpandMoreIcon />
-          )
-        }
         aria-controls="panel1a-content"
         id="panel1a-header"
       >
-        <Typography sx={{ overflow: 'hidden', maxWidth: 200 }}>
+        <Typography
+          variant="subtitle2"
+          sx={{
+            width: '100%',
+            overflow: 'hidden',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           {roomName && !roomName.includes(':') ? roomName : aliasSeed}
+          <div>
+            {expanded && db.online && loadingRoom === aliasSeed ? (
+              <CircularProgress size={20} />
+            ) : (
+              <>
+                <IconButton>
+                  {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </IconButton>
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    roomMenuOpen
+                      ? handleRoomMenuClose()
+                      : handleRoomMenuOpen(e);
+                  }}
+                  aria-controls={roomMenuOpen ? 'basic-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={roomMenuOpen ? 'true' : undefined}
+                  id={`room-menu-${aliasSeed}`}
+                >
+                  <MoreHorizRounded />
+                  {
+                    <Menu
+                      id="basic-menu"
+                      anchorEl={anchorEl}
+                      onClose={handleRoomMenuClose}
+                      MenuListProps={{
+                        'aria-labelledby': `room-menu-${aliasSeed}`,
+                      }}
+                      open={roomMenuOpen}
+                    >
+                      <MenuItem disabled onClick={handleRoomMenuClose}>
+                        <Edit sx={{ mr: 2 }} fontSize={'small'} />
+                        Rename
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          handleRoomMenuClose();
+                          handleDeleteRoom(aliasSeed);
+                        }}
+                      >
+                        <DeleteOutline sx={{ mr: 2 }} fontSize={'small'} />
+                        Delete
+                      </MenuItem>
+                      {/* <MenuItem>Share</MenuItem> */}
+                    </Menu>
+                  }
+                </IconButton>
+              </>
+            )}
+          </div>
         </Typography>
       </AccordionSummary>
       {connectedRooms[aliasSeed] && (
