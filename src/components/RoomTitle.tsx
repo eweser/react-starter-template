@@ -22,12 +22,11 @@ export const RoomTitle = ({
   roomName?: string;
   expanded: boolean;
 }) => {
+  const { db } = useDatabase();
   const { connectedRooms, handleDeleteRoom, loadingRoom } =
     useNotesCollections();
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const { db } = useDatabase();
-
   const roomMenuOpen = Boolean(anchorEl);
   const handleRoomMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -35,6 +34,7 @@ export const RoomTitle = ({
   const handleRoomMenuClose = () => {
     setAnchorEl(null);
   };
+
   return (
     <AccordionSummary
       key={connectedRooms[aliasSeed]?.roomAlias ?? aliasSeed}

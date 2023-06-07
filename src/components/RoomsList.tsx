@@ -3,7 +3,7 @@ import { Box, Button } from '@mui/material';
 import { useState } from 'react';
 import Accordion from '@mui/material/Accordion';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
-import { H6 } from './library/Typography';
+import { Subtitle2 } from './library/Typography';
 import { NotePreviewList } from './NotePreviewList';
 import { useDatabase } from '../DatabaseContext';
 import { defaultNoteText } from '../config';
@@ -47,7 +47,6 @@ export const RoomsList = ({
         roomAliasSeed: seed,
         id: newNote._id,
       });
-      // roomlist is not updating...
       setCreateRoomModalOpen(false);
     } catch (error: any) {
       alert(error.message);
@@ -59,9 +58,15 @@ export const RoomsList = ({
   return (
     <>
       <Box
-        sx={{ display: 'flex', m: 1, p: 1, justifyContent: 'space-between' }}
+        sx={{
+          display: 'flex',
+          m: 1,
+          p: 1,
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
       >
-        <H6>Folders</H6>
+        <Subtitle2>Folders</Subtitle2>
         <Button
           onClick={() => setCreateRoomModalOpen(true)}
           variant="outlined"
