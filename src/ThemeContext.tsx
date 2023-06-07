@@ -1,9 +1,8 @@
 import type { Theme } from '@mui/material/styles';
-import { ThemeProvider, useTheme } from '@mui/material/styles';
-import { Button, Box, CssBaseline, IconButton } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
+import { Button, CssBaseline, IconButton } from '@mui/material';
 import type { FC, PropsWithChildren } from 'react';
 import { useState, useEffect, useContext, createContext } from 'react';
-import { ButtonFont } from './components/library/Typography';
 import { darkTheme, lightTheme } from './theme';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
@@ -77,24 +76,21 @@ export interface ThemeContextProps {
 export const ThemeToggleButton = () => {
   const { themeType, toggleTheme } = useContext(CustomThemeContext);
   const themeLabel = themeType === 'dark' ? 'Light theme' : 'Dark theme';
-  const theme = useTheme();
   return (
-    <Button onClick={toggleTheme}>
-      <Box
-        display="flex"
-        alignItems="center"
-        color={theme.palette.text.primary}
-      >
-        <IconButton sx={{ ml: 1 }} onClick={toggleTheme} color="inherit">
-          {themeType === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-        </IconButton>
-      </Box>
-      <ButtonFont
-        color={themeType === 'dark' ? theme.palette.text.primary : 'inherit'}
-        marginLeft={2}
-      >
-        {themeLabel}
-      </ButtonFont>
+    <Button
+      onClick={toggleTheme}
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        color: 'text.primary',
+        px: 2,
+      }}
+    >
+      <IconButton sx={{ mr: 2 }} color="inherit">
+        {themeType === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+      </IconButton>
+
+      {themeLabel}
     </Button>
   );
 };
