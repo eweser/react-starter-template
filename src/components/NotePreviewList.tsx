@@ -1,17 +1,10 @@
-import {
-  getAliasSeedFromAlias,
-  type Documents,
-  type Note,
-  type Room,
-} from '@eweser/db';
+import { type Note, type Room } from '@eweser/db';
 import { Button, Divider } from '@mui/material';
-import { useState } from 'react';
-import { useDatabase } from '../DatabaseContext';
+
 import { NotePreview } from './NotePreview';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import { Add } from '@mui/icons-material';
-
-const defaultNoteText = 'New Note';
+import { useNotesDocuments } from '../CollectionContext';
 
 export const NotePreviewList = ({
   room,
@@ -31,41 +24,30 @@ export const NotePreviewList = ({
     id: string;
   }) => void;
 }) => {
-  const { db } = useDatabase();
-  const Notes = db.getDocuments(room);
+  const { notes, createNote, deleteNote, aliasSeed } = useNotesDocuments(room);
 
-  // preview list
-  const [notes, setNotes] = useState<Documents<Note>>(
-    Notes.sortByRecent(Notes.getUndeleted())
-  );
-  const aliasSeed = getAliasSeedFromAlias(room.roomAlias);
-
-  Notes.onChange((_event) => {
-    const unDeleted = Notes.sortByRecent(Notes.getUndeleted());
-    setNotes(unDeleted);
-    if (!unDeleted[selectedNote.id]) {
-      setSelectedNote({
-        roomAliasSeed: aliasSeed,
-        id: Object.keys(unDeleted)[0],
-      });
-    }
-  });
-
-  const createNote = () => {
-    // Notes.new will fill in the metadata for you, including _id with a random string and _updated with the current timestamp
-    const newNote = Notes.new({ text: defaultNoteText });
+  const handleCreateNote = () => {
+    const newNote = createNote();
     setSelectedNote({
       roomAliasSeed: aliasSeed,
       id: newNote._id,
     });
   };
-  const deleteNote = (note: Note) => {
-    Notes.delete(note._id);
+  const handleDeleteNote = (note: Note) => {
+    deleteNote(note);
+    if (selectedNote.id === note._id) {
+      const undeleted = Object.values(notes).filter((note) => !note._deleted);
+      setSelectedNote({
+        roomAliasSeed: aliasSeed,
+        id: undeleted[0]?._id || '',
+      });
+    }
   };
+
   return (
     <AccordionDetails sx={{ background: 'background.default' }}>
       <Button
-        onClick={createNote}
+        onClick={handleCreateNote}
         color="secondary"
         variant="outlined"
         endIcon={<Add />}
@@ -91,7 +73,7 @@ export const NotePreviewList = ({
               <NotePreview
                 key={id}
                 note={note}
-                deleteNote={deleteNote}
+                deleteNote={handleDeleteNote}
                 onClick={() =>
                   setSelectedNote({
                     roomAliasSeed: aliasSeed,

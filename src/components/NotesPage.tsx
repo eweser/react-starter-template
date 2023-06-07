@@ -58,7 +58,7 @@ export const NotesPage = () => {
           }}
           key={selectedNote.roomAliasSeed + selectedNote.id}
           room={connectedRooms[selectedNote.roomAliasSeed]}
-          placeholder="New Note"
+          placeholder="Select or Create a Note to Begin"
           selectedNoteId={selectedNote.id}
         />
       ) : (
