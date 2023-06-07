@@ -14,7 +14,6 @@ import {
   TextField,
 } from '@mui/material';
 import { useState } from 'react';
-import { useNotesCollections } from '../CollectionContext';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
@@ -32,6 +31,7 @@ import {
   MoreHorizRounded,
   Share,
 } from '@mui/icons-material';
+import { useNotesCollections } from '../useNotes';
 interface CreateRoomModalProps extends Omit<DialogProps, 'children'> {
   newRoomName: string;
   setNewRoomName: (name: string) => void;

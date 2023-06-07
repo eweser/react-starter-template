@@ -2,7 +2,7 @@ import { Box, CircularProgress, useTheme } from '@mui/material';
 import { Nav } from './components/Nav';
 import { useDatabase } from './DatabaseContext';
 import { LoginForm } from './components/LoginForm';
-import { NotesProvider } from './CollectionContext';
+import { NotesProvider } from './useNotes';
 import { initialRoomConnect } from './config';
 import { NotesPage } from './components/NotesPage';
 
