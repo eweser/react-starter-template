@@ -4,7 +4,7 @@ import { Button, Divider } from '@mui/material';
 import { NotePreview } from './NotePreview';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import { Add } from '@mui/icons-material';
-import { useNotesDocuments } from '../CollectionContext';
+import { useNotesDocuments } from '../useNotes';
 
 export const NotePreviewList = ({
   room,

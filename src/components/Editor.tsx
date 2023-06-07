@@ -1,8 +1,7 @@
 import type { Room, Note } from '@eweser/db';
 import type { SxProps } from '@mui/material';
 import { styled } from '@mui/material';
-
-import { useNotesDocuments } from '../CollectionContext';
+import { useNotesDocuments } from '../useNotes';
 
 const StyledTextarea = styled('textarea')(
   ({ theme: { palette } }) => `

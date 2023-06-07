@@ -1,15 +1,16 @@
 import { Box, CircularProgress } from '@mui/material';
-import { useNotes } from '../CollectionContext';
+
 import { useState } from 'react';
 import Editor from './Editor';
 import { RoomsList } from './RoomsList';
 import { initialRoomConnect } from '../config';
+import { useNotesCollections } from '../useNotes';
 
 // needs a room provider for each list of previews, and for the editor.
 // the parent state should have selected room, and selected note
 
 export const NotesPage = () => {
-  const { connectedRooms } = useNotes();
+  const { connectedRooms } = useNotesCollections();
 
   const [selectedNote, setSelectedNote] = useState({
     roomAliasSeed: initialRoomConnect.aliasSeed,

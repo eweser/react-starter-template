@@ -14,7 +14,7 @@ import {
   TextField,
 } from '@mui/material';
 import { useState } from 'react';
-import { useNotes } from '../CollectionContext';
+import { useNotesCollections } from '../CollectionContext';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
@@ -105,7 +105,7 @@ export const RoomsList = ({
   }) => void;
 }) => {
   const { db } = useDatabase();
-  const { roomsList, handleCreateRoom } = useNotes();
+  const { roomsList, handleCreateRoom } = useNotesCollections();
   const [createRoomModalOpen, setCreateRoomModalOpen] = useState(false);
   const [creatingRoom, setCreatingRoom] = useState(false);
   const [newRoomName, setNewRoomName] = useState('');
@@ -202,7 +202,7 @@ const RoomAccordion = ({
 }) => {
   const { db } = useDatabase();
   const { connectedRooms, handleConnectRoom, handleDeleteRoom, loadingRoom } =
-    useNotes();
+    useNotesCollections();
 
   const [expanded, setExpanded] = useState(
     selectedNote.roomAliasSeed === aliasSeed

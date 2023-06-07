@@ -1,5 +1,4 @@
-import type { RoomMetaData, Document, Room, Note, Documents } from '@eweser/db';
-import { CollectionKey, getAliasSeedFromAlias } from '@eweser/db';
+import type { RoomMetaData, Document, Room, CollectionKey } from '@eweser/db';
 import { useDatabase } from './DatabaseContext';
 import {
   createContext,
@@ -8,7 +7,6 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { defaultNoteText } from './config';
 
 export interface CollectionContextValue<T extends Document = Document> {
   roomsList: {
@@ -167,62 +165,4 @@ export const useCollection = <
     throw new Error('useCollection must be used within a CollectionProvider');
   }
   return context as CollectionContextValue<T>;
-};
-
-export const NotesProvider = ({
-  aliasSeed,
-  children,
-}: {
-  aliasSeed?: string;
-  children: React.ReactNode;
-}) => (
-  <CollectionProvider collectionKey={CollectionKey.notes} aliasSeed={aliasSeed}>
-    {children}
-  </CollectionProvider>
-);
-
-export const useNotes = () => useCollection<Note>();
-
-export const useNotesDocuments = (room: Room<Note>) => {
-  const { db } = useDatabase();
-  const Notes = db.getDocuments(room);
-
-  const [notes, setNotes] = useState<Documents<Note>>(
-    Notes.sortByRecent(Notes.getUndeleted())
-  );
-  const aliasSeed = getAliasSeedFromAlias(room.roomAlias);
-
-  Notes.onChange((_event) => {
-    const unDeleted = Notes.sortByRecent(Notes.getUndeleted());
-    setNotes(unDeleted);
-  });
-
-  const createNote = useCallback(() => {
-    return Notes.new({ text: defaultNoteText });
-  }, [Notes]);
-
-  const deleteNote = useCallback(
-    (note: Note) => {
-      return Notes.delete(note._id);
-    },
-    [Notes]
-  );
-
-  const updateNote = useCallback(
-    (noteId: string, text: string) => {
-      const note = Notes.get(noteId);
-      if (!note || !text) return;
-      note.text = text;
-      Notes.set(note);
-    },
-    [Notes]
-  );
-
-  return {
-    notes,
-    aliasSeed,
-    createNote,
-    deleteNote,
-    updateNote,
-  };
 };
