@@ -16,3 +16,10 @@ Check out the `DatabaseContext` for a good example of how to provide the databas
 Check out the `CollectionContext` for a nice generic example of how to connect to rooms and collections.
 
 Check out `useNotes` for examples on how to make a well-typed hook for a collection and provide CRUD operations.
+
+## TO DO
+
+- [ ] Offline-first, signup-less experience. Let the user use the app without signing in, and sync when they do.
+- [ ] Profile updating, mark public/private
+- [ ] Mark folders as public/private
+- [ ] Add backup providers, manage backups/restore from backup. Preview backup.

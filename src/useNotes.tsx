@@ -1,9 +1,10 @@
 import type { Note, Room, Documents } from '@eweser/db';
 import { CollectionKey, getAliasSeedFromAlias } from '@eweser/db';
 import { useState, useCallback } from 'react';
-import { CollectionProvider, useCollection } from './CollectionContext';
+import { makeCollectionProvider, useCollection } from './CollectionContext';
 import { useDatabase } from './DatabaseContext';
 import { defaultNoteText } from './config';
+const { Provider, context } = makeCollectionProvider();
 
 export const NotesProvider = ({
   aliasSeed,
@@ -12,12 +13,12 @@ export const NotesProvider = ({
   aliasSeed?: string;
   children: React.ReactNode;
 }) => (
-  <CollectionProvider collectionKey={CollectionKey.notes} aliasSeed={aliasSeed}>
+  <Provider collectionKey={CollectionKey.notes} aliasSeed={aliasSeed}>
     {children}
-  </CollectionProvider>
+  </Provider>
 );
 
-export const useNotesCollections = () => useCollection<Note>();
+export const useNotesCollections = () => useCollection<Note>(context);
 
 export const useNotesDocuments = (room: Room<Note>) => {
   const { db } = useDatabase();

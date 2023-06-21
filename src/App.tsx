@@ -5,10 +5,15 @@ import { LoginForm } from './components/LoginForm';
 import { NotesProvider } from './useNotes';
 import { initialRoomConnect } from './config';
 import { NotesPage } from './components/NotesPage';
+import { ProfilesProvider } from './useProfile';
+import { AccountModal } from './components/AccountModal';
+import { useState } from 'react';
 
 function App() {
   const { loadingStatus } = useDatabase();
   const { palette } = useTheme();
+  const [accountModalOpen, setAccountModalOpen] = useState(false);
+
   return (
     <Box
       className="flex-grow-container"
@@ -19,12 +24,18 @@ function App() {
         alignItems: 'center',
       }}
     >
-      <Nav />
+      <Nav setAccountModalOpen={setAccountModalOpen} />
       {loadingStatus === 'initial' || loadingStatus === 'loading' ? (
         <CircularProgress size={80} />
       ) : loadingStatus === 'ready' ? (
-        <NotesProvider {...initialRoomConnect}>
-          <NotesPage />
+        <NotesProvider aliasSeed={initialRoomConnect.aliasSeed}>
+          <ProfilesProvider aliasSeed="public">
+            <NotesPage />
+            <AccountModal
+              open={accountModalOpen}
+              onClose={() => setAccountModalOpen(false)}
+            />
+          </ProfilesProvider>
         </NotesProvider>
       ) : (
         <LoginForm />

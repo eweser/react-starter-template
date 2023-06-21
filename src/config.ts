@@ -1,6 +1,6 @@
 import { CollectionKey } from '@eweser/db';
 
-const dummyUserName = 'dummy-user123';
+const dummyUserName = 'dummy-user1231';
 const dummyUserPass = 'dumdum';
 
 export const MATRIX_SERVER =
@@ -16,8 +16,7 @@ export const env =
 export const dev = env === 'dev';
 export const ci = env === 'ci';
 
-export const showSignup = false;
-// export const showSignup = env !== 'prod';
+export const showSignup = env !== 'prod';
 
 export const DEV_USERNAME =
   import.meta.env.VITE_DEV_USERNAME ?? dev ? dummyUserName : '';
@@ -37,3 +36,4 @@ export const initialRoomConnect = {
 };
 
 export const defaultNoteText = 'New Note';
+export const thisAppProfileKey = 'a-profile-specific-to-this-app';

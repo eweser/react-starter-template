@@ -11,8 +11,13 @@ import { ThemeToggleButton } from '../ThemeContext';
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useState } from 'react';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 
-export const Nav = () => {
+export const Nav = ({
+  setAccountModalOpen,
+}: {
+  setAccountModalOpen: (open: boolean) => void;
+}) => {
   const [navOpen, setNavOpen] = useState(false);
 
   const handleLogOut = () => {
@@ -34,8 +39,23 @@ export const Nav = () => {
           </IconButton>
         </Toolbar>
       </AppBar>
+
       <Drawer open={navOpen} onClose={() => setNavOpen(false)}>
         <List sx={{ minWidth: 300 }}>
+          <ListItem>
+            <Button
+              onClick={() => setAccountModalOpen(true)}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                color: 'text.primary',
+                px: 2,
+              }}
+            >
+              <AccountBoxIcon sx={{ mr: 2 }} color="inherit" />
+              Account
+            </Button>
+          </ListItem>
           <ListItem>
             <ThemeToggleButton />
           </ListItem>
@@ -49,9 +69,7 @@ export const Nav = () => {
                 px: 2,
               }}
             >
-              <IconButton sx={{ mr: 2 }} color="inherit">
-                <LogoutIcon />
-              </IconButton>
+              <LogoutIcon sx={{ mr: 2 }} color="inherit" />
               Log Out
             </Button>
           </ListItem>

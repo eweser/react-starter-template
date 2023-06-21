@@ -1,6 +1,6 @@
 import type { Theme } from '@mui/material/styles';
 import { ThemeProvider } from '@mui/material/styles';
-import { Button, CssBaseline, IconButton } from '@mui/material';
+import { Button, CssBaseline } from '@mui/material';
 import type { FC, PropsWithChildren } from 'react';
 import { useState, useEffect, useContext, createContext } from 'react';
 import { darkTheme, lightTheme } from './theme';
@@ -86,9 +86,11 @@ export const ThemeToggleButton = () => {
         px: 2,
       }}
     >
-      <IconButton sx={{ mr: 2 }} color="inherit">
-        {themeType === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-      </IconButton>
+      {themeType === 'dark' ? (
+        <Brightness7Icon sx={{ mr: 2 }} color="inherit" />
+      ) : (
+        <Brightness4Icon sx={{ mr: 2 }} color="inherit" />
+      )}
 
       {themeLabel}
     </Button>

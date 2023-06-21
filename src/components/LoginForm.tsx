@@ -132,7 +132,7 @@ export const LoginForm = () => {
   const submitDisabled = requiredEmpty || submitting;
 
   return (
-    <Paper sx={{ maxWidth: '50ch', margin: { xs: 2, md: 4 } }}>
+    <Paper sx={{ width: '50ch', margin: { xs: 2, md: 4 } }}>
       <Box
         accessibility-role="form"
         sx={{
