@@ -20,6 +20,6 @@ Check out `useNotes` for examples on how to make a well-typed hook for a collect
 ## TO DO
 
 - [ ] Offline-first, signup-less experience. Let the user use the app without signing in, and sync when they do.
-- [ ] Profile updating, mark public/private
+- [x] Profile updating, mark public/private
 - [ ] Mark folders as public/private
 - [ ] Add backup providers, manage backups/restore from backup. Preview backup.
